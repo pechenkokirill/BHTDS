@@ -1,17 +1,16 @@
 ﻿using BHTDS.Engine.Components;
-using BHTDS.Engine.Scenes;
+using BHTDS.Engine.Engine.Events;
 
 namespace BHTDS.Engine.Entities;
 
 public sealed class Entity
 {
-    private readonly Queue<Component> componentUpdateQueue = [];
     private readonly IComponentsContainer components = new DictionaryComponentContainer();
-    private readonly Scene scene;
+    private readonly ComponentEventBus eventBus;
 
-    public Entity(Scene scene)
+    public Entity(ComponentEventBus eventBus)
     {
-        this.scene = scene;
+        this.eventBus = eventBus;
     }
 
     public T AddComponent<T>(Action<T>? configure = default) where T : Component
@@ -24,7 +23,7 @@ public sealed class Entity
     private T AddComponent<T>(T component) where T : Component
     {
         this.components.Add(component);
-        component.OnAttach(this.scene, this);
+        this.eventBus.EnqueueAttach(this, component);
         return component;
     }
 
@@ -36,53 +35,25 @@ public sealed class Entity
 
     public void Start()
     {
-        foreach (var component in components)
-        {
-            componentUpdateQueue.Enqueue(component);
-        }
-
-        while (componentUpdateQueue.TryDequeue(out var component))
-        {
-            component.OnStart();
-        }
+        this.eventBus.EnqueueUpdate(this.components);
+        this.eventBus.OnStart();
     }
 
     public void Update()
     {
-        foreach (var component in components)
-        {
-            componentUpdateQueue.Enqueue(component);
-        }
-
-        while (componentUpdateQueue.TryDequeue(out var component))
-        {
-            component.OnUpdate();
-        }
+        this.eventBus.EnqueueUpdate(this.components);
+        this.eventBus.OnUpdate();
     }
 
     public void Render()
     {
-        foreach (var component in components)
-        {
-            componentUpdateQueue.Enqueue(component);
-        }
-
-        while (componentUpdateQueue.TryDequeue(out var component))
-        {
-            component.OnRender();
-        }
+        this.eventBus.EnqueueUpdate(this.components);
+        this.eventBus.OnRender();
     }
 
     public void Destroyed()
     {
-        foreach (var component in components)
-        {
-            componentUpdateQueue.Enqueue(component);
-        }
-
-        while (componentUpdateQueue.TryDequeue(out var component))
-        {
-            component.OnDestroy();
-        }
+        this.eventBus.EnqueueUpdate(this.components);
+        this.eventBus.OnDestroy();
     }
 }

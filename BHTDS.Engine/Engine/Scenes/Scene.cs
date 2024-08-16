@@ -1,5 +1,6 @@
 ﻿using BHTDS.Engine.Components.BuildIn;
 using BHTDS.Engine.Core;
+using BHTDS.Engine.Engine.Events;
 using BHTDS.Engine.Entities;
 using BHTDS.Engine.Features.Resources;
 
@@ -10,8 +11,33 @@ public sealed class Scene
     private readonly Queue<Entity> updateEntityQueue = [];
     private readonly List<Entity> entities = [];
     private readonly TwoWayMap<string, Entity> namedEntityes = new();
+    private readonly ComponentEventBus componentsEventBus;
+    private readonly EventBus<Entity> entityEventBus;
 
-    public Scene(IFeatureLocator featureLocator) => Features = featureLocator;
+    public Scene(IFeatureLocator featureLocator, string sceneName)
+    {
+        Features = featureLocator;
+        Name = sceneName;
+
+        this.componentsEventBus = new()
+        {
+            StartCallback = c => c.OnStart(),
+            UpdateCallback = c => c.OnUpdate(),
+            RenderCallback = c => c.OnRender(),
+            DestroyCallback = c => c.OnDestroy(),
+            AttachCallback = (c, e, s) => c.OnAttach(s, e),
+        };
+
+        this.entityEventBus = new()
+        {
+            StartCallback = x => x.Start(),
+            UpdateCallback = x => x.Update(),
+            RenderCallback = x => x.Render(),
+            DestroyCallback = x => x.Destroyed(),
+        };
+    }
+    
+    public string Name { get; }
 
     public IFeatureLocator Features { get; }
 
@@ -23,7 +49,7 @@ public sealed class Scene
 
     public Entity CreateEntity(string? name = default)
     {
-        var entity = new Entity(this);
+        var entity = new Entity(this.componentsEventBus);
         this.entities.Add(entity);
         if (name is not null) entity.AddComponent<NameComponent>(x => x.Name = name);
         return entity;
@@ -45,40 +71,20 @@ public sealed class Scene
 
     public void Start()
     {
-        foreach (var entity in entities)
-        {
-            updateEntityQueue.Enqueue(entity);
-        }
-
-        while (updateEntityQueue.TryDequeue(out var entity))
-        {
-            entity.Start();
-        }
+        this.entityEventBus.EnqueueUpdate(entities);
+        this.entityEventBus.OnStart();
     }
 
     public void Update()
     {
-        foreach (var entity in entities)
-        {
-            updateEntityQueue.Enqueue(entity);
-        }
-
-        while (updateEntityQueue.TryDequeue(out var entity))
-        {
-            entity.Update();
-        }
+        this.componentsEventBus.OnAttach(this);
+        this.entityEventBus.EnqueueUpdate(entities);
+        this.entityEventBus.OnUpdate();
     }
 
     public void Render()
     {
-        foreach (var entity in entities)
-        {
-            updateEntityQueue.Enqueue(entity);
-        }
-
-        while (updateEntityQueue.TryDequeue(out var entity))
-        {
-            entity.Render();
-        }
+        this.entityEventBus.EnqueueUpdate(entities);
+        this.entityEventBus.OnRender();
     }
 }
