@@ -11,8 +11,6 @@ class BHTDSGame
         {
             var mainScene = engine.SceneManager.CreateScene("main");
             mainScene.CreateEntity().AddComponent<CreateSceneTestComponent>();
-
-            engine.SceneManager.LoadScene(mainScene);
             engine.Run();
         }
     }
