@@ -1,14 +1,14 @@
 ﻿using BHTDS.Engine.Components.BuildIn;
 using BHTDS.Engine.Core;
-using BHTDS.Engine.Engine.Events;
 using BHTDS.Engine.Entities;
-using BHTDS.Engine.Features.Resources;
+using BHTDS.Engine.Events;
+using BHTDS.Engine.Features;
+using BHTDS.Engine.Resources;
 
 namespace BHTDS.Engine.Scenes;
 
 public sealed class Scene
 {
-    private readonly Queue<Entity> updateEntityQueue = [];
     private readonly List<Entity> entities = [];
     private readonly TwoWayMap<string, Entity> namedEntityes = new();
     private readonly ComponentEventBus componentsEventBus;
@@ -33,7 +33,6 @@ public sealed class Scene
             StartCallback = x => x.Start(),
             UpdateCallback = x => x.Update(),
             RenderCallback = x => x.Render(),
-            DestroyCallback = x => x.Destroyed(),
         };
     }
     
@@ -71,6 +70,7 @@ public sealed class Scene
 
     public void Start()
     {
+        this.componentsEventBus.OnAttach(this);
         this.entityEventBus.EnqueueUpdate(entities);
         this.entityEventBus.OnStart();
     }

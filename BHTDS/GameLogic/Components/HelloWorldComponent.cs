@@ -1,7 +1,7 @@
 ﻿using BHTDS.Engine.Components.BuildIn;
 using BHTDS.Engine.Features;
-using BHTDS.Engine.Features.Resources;
-using BHTDS.Engine.Features.Resources.BuildIn;
+using BHTDS.Engine.Resources;
+using BHTDS.Engine.Resources.BuildIn;
 
 namespace BHTDS.GameLogic.Components;
 
@@ -19,7 +19,7 @@ public sealed class HelloWorldComponent : SceneEntityRefComponent
 
     public override void OnStart()
     {
-        Console.WriteLine("Hello World!");
+        Console.WriteLine($"Hello World from scene {Scene.Name}!");
     }
 
     public override void OnUpdate()

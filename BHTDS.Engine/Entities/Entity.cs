@@ -1,5 +1,5 @@
 ﻿using BHTDS.Engine.Components;
-using BHTDS.Engine.Engine.Events;
+using BHTDS.Engine.Events;
 
 namespace BHTDS.Engine.Entities;
 
@@ -20,7 +20,7 @@ public sealed class Entity
         return AddComponent(component);
     }
 
-    private T AddComponent<T>(T component) where T : Component
+    public T AddComponent<T>(T component) where T : Component
     {
         this.components.Add(component);
         this.eventBus.EnqueueAttach(this, component);

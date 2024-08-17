@@ -1,4 +1,4 @@
-﻿namespace BHTDS.Engine.Core;
+﻿namespace BHTDS.Engine.Features;
 
 public interface IFeatureMarker;
 

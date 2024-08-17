@@ -1,7 +1,7 @@
-﻿using BHTDS.Engine.Core;
-using static BHTDS.Engine.Features.Resources.ResourcesFeature;
+﻿using BHTDS.Engine.Features;
+using static BHTDS.Engine.Resources.ResourcesFeature;
 
-namespace BHTDS.Engine.Features.Resources;
+namespace BHTDS.Engine.Resources;
 
 public interface IResourcesFeature : IFeatureMarker
 {

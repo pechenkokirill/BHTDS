@@ -1,4 +1,5 @@
-﻿using BHTDS.GameLogic.Components;
+﻿using BHTDS.Engine;
+using BHTDS.GameLogic.Components;
 
 namespace BHTDS;
 
@@ -9,7 +10,7 @@ class BHTDSGame
         using (BHTDSEngine engine = new BHTDSEngine())
         {
             var mainScene = engine.SceneManager.CreateScene("main");
-            mainScene.CreateEntity().AddComponent<HelloWorldComponent>();
+            mainScene.CreateEntity().AddComponent<CreateSceneTestComponent>();
 
             engine.SceneManager.LoadScene(mainScene);
             engine.Run();

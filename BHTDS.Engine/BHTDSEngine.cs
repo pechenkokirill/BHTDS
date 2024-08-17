@@ -1,12 +1,13 @@
 ﻿using BHTDS.Engine.Core;
-using BHTDS.Engine.Engine.Scenes;
 using BHTDS.Engine.Features;
-using BHTDS.Engine.Features.Resources;
-using BHTDS.Engine.Features.Resources.BuildIn;
+using BHTDS.Engine.Rendering;
+using BHTDS.Engine.Resources;
+using BHTDS.Engine.Resources.BuildIn;
+using BHTDS.Engine.Scenes;
 using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-namespace BHTDS;
+namespace BHTDS.Engine;
 
 public class BHTDSEngine : IDisposable
 {
@@ -14,6 +15,7 @@ public class BHTDSEngine : IDisposable
     private readonly DictionaryFeatureContainer featureContainer;
     private readonly NativeWindow window;
     private readonly SceneManager sceneManager;
+    private readonly Renderer renderer;
 
     public BHTDSEngine()
     {
@@ -21,9 +23,10 @@ public class BHTDSEngine : IDisposable
         this.window = new NativeWindow(NativeWindowSettings.Default);
         this.sceneManager = new SceneManager(featureContainer);
         this.time = new Time();
+        this.renderer = new Renderer();
     }
 
-    public ISceneManager SceneManager => this.sceneManager;
+    public ISceneManagerFeature SceneManager => this.sceneManager;
 
     public void Run()
     {
@@ -32,7 +35,8 @@ public class BHTDSEngine : IDisposable
 
         this.featureContainer.RegisterFeature(new WindowFeature(this.window));
         this.featureContainer.RegisterFeature<IResourcesFeature>(resources);
-        this.featureContainer.RegisterFeature<ISceneManager>(this.sceneManager);
+        this.featureContainer.RegisterFeature<ISceneManagerFeature>(this.sceneManager);
+        this.featureContainer.RegisterFeature<IRendererFeature>(this.renderer);
 
         this.window.Context.MakeCurrent();
 
@@ -43,13 +47,10 @@ public class BHTDSEngine : IDisposable
             NativeWindow.ProcessWindowEvents(false);
 
             this.sceneManager.Start();
-
             this.sceneManager.Update();
-
             this.sceneManager.Render();
-
+            this.renderer.DrawFrame();
             this.window.Context.SwapBuffers();
-
             this.time.DeltaTime = (float)GLFW.GetTime() - beginFrameTime;
         }
     }

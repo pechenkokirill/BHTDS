@@ -1,6 +1,6 @@
 ﻿using BHTDS.Engine.Entities;
 
-namespace BHTDS.Engine.Engine.Scenes;
+namespace BHTDS.Engine.Scenes;
 
 internal interface ISceneLoader
 {

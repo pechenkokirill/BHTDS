@@ -1,4 +1,6 @@
-﻿namespace BHTDS.Engine.Core;
+﻿using BHTDS.Engine.Features;
+
+namespace BHTDS.Engine.Core;
 
 public sealed class DictionaryFeatureContainer : IFeatureLocator
 {

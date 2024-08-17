@@ -1,4 +1,4 @@
-﻿namespace BHTDS.Engine.Features.Resources;
+﻿namespace BHTDS.Engine.Resources;
 
 public sealed class ResourcesFeature : IResourcesFeature
 {

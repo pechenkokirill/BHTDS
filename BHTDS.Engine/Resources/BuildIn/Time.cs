@@ -1,4 +1,6 @@
-﻿namespace BHTDS.Engine.Features.Resources.BuildIn;
+﻿using BHTDS.Engine.Resources;
+
+namespace BHTDS.Engine.Resources.BuildIn;
 
 public sealed class Time : ResourcesFeature.IResource
 {

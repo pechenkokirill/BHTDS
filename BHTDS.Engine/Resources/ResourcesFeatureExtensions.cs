@@ -1,7 +1,7 @@
-﻿using BHTDS.Engine.Core;
-using BHTDS.Engine.Features.Resources.BuildIn;
+﻿using BHTDS.Engine.Features;
+using BHTDS.Engine.Resources.BuildIn;
 
-namespace BHTDS.Engine.Features.Resources;
+namespace BHTDS.Engine.Resources;
 public static class ResourcesFeatureExtensions
 {
     public static T GetResource<T>(this IFeatureLocator locator)

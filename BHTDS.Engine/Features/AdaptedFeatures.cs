@@ -1,5 +1,4 @@
-﻿using BHTDS.Engine.Core;
-using OpenTK.Windowing.Desktop;
+﻿using OpenTK.Windowing.Desktop;
 
 namespace BHTDS.Engine.Features;
 
